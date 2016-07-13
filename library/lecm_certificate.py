@@ -57,37 +57,26 @@ options:
 '''
 
 EXAMPLES = '''
-- name: Create a git backup item (with all branches)
-  lecm_git: config=/etc/lecm.conf
-                     name=git_superproject
-                     path=/srv/git/git_superproject
-                     branches=all
+- name: Create a SSL certificate
+  lecm_certificate: config=/etc/lecm.conf
+                    name=lecm.example.com
 
-- name: Create a git backup item (with only master branch)
-  lecm_git: config=/etc/lecm.conf
-                     name=git_superproject
-                     path=/srv/git/git_superproject
-                     branches=master
 
-- name: Remove a git backup item
-  lecm_git: config=/etc/lecm.conf
-                     name=git_superproject
-                     state=absent
+- name: Remove a SSL certificate
+  lecm_certificate: config=/etc/lecm.conf
+                    name=lecm.example.com
+                    state=absent
 '''
 
 RETURN = '''
 name:
-  description: Name of the git project
+  description: Name of the SSL certificate
   type: string
-  sample: git_superproject
+  sample: lecm.example.com
 path:
   description: Path to the git project
   type: string
   sample: /srv/git/git_superproject
-branches:
-  description: Branches to backup from the git project
-  type: string
-  sample: master
 '''
 
 class Certificate(object):
@@ -156,25 +145,8 @@ class Certificate(object):
 
 
     def remove(self):
-        try:
-            lecm_conf = yaml.load(open(self.config, 'r'))
-        except:
-            lecm_conf = {}
-
-        if lecm_conf is None:
-            lecm_conf = {}
-
-        certificates = None
-        if 'certificates' in lecm_conf:
-            certificates = [certificate for certificate in lecm_conf['certificates'] if certificate['name'] != self.name]
-       
-        if 'backups' not in lecm_conf or backups == lecm_conf['backups']:
-            self.changed = False
-        else:
-            lecm_conf['backups'] = backups
-            with open(self.config, 'w') as conf_file:
-                conf_file.write(yaml.dump(lecm_conf))
-
+        # Not Implemented yet
+        pass
 
     def dump(self):
     
