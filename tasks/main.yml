@@ -1,13 +1,6 @@
 ---
-# NOTE(spredzy): To remove once lecm is packaged
 - name: Install required dependencies
-  yum: name={{ item }}
-  with_items:
-    - gcc
-    - python-devel
-    - libffi-devel
-    - openssl-devel
-    - python-pip
+  include: '{{ ansible_os_family }}.yml'
 
 - name: Install lecm from Pip
   pip: name=lecm
