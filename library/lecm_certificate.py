@@ -31,7 +31,7 @@ _PROPERTIES = ['type', 'size', 'digest', 'version', 'subjectAltName',
                'countryName', 'stateOrProvinceName', 'localityName',
                'organizationName', 'organizationUnitName', 'commonName',
                'emailAddress', 'account_key_name', 'path', 'remaining_days',
-               'service_name']
+               'service_name', 'service_provider']
 
 
 DOCUMENTATION = '''
@@ -102,6 +102,7 @@ class Certificate(object):
         self.account_key_name = module.params['account_key_name']
         self.remaining_days = module.params['remaining_days']
         self.service_name = module.params['service_name']
+        self.service_provider = module.params['service_provider']
         self.path = module.params['path']
 
 
@@ -180,6 +181,7 @@ def main():
             path=dict(required=False, type='path'),
             remaining_days=dict(required=False, default='10', type='str'),
             service_name=dict(required=False, type='str'),
+            service_provider=dict(required=False, default='systemd', choices=['systemd', 'sysv'], type='str'),
         ),
     )
 
