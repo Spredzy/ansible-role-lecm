@@ -43,5 +43,4 @@
         month={{ item.value.month | default('*') }}
         job={{ item.value.job | default('lecm --renew') }}
         state={{ item.value.state | default('present') }}
-  when: '{{ lecm_crons is defined }}'
   with_dict: '{{ lecm_crons }}'

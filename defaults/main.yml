@@ -23,3 +23,5 @@ lecm_globals: {}
 # lecm certificates settings
 lecm_certificates: {}
 
+# configuration for the cron module
+lecm_crons: {}
