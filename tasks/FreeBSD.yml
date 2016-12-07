@@ -19,3 +19,6 @@
   with_items:
     - py27-pip
     - py27-setuptools_scm
+
+- name: Install lecm
+  pip: name=lecm
