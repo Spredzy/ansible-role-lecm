@@ -15,10 +15,4 @@
 
 ---
 - name: Install required dependencies
-  yum: name={{ item }}
-  with_items:
-    - gcc
-    - python-devel
-    - libffi-devel
-    - openssl-devel
-    - python-pip
+  package: name=epel-release
