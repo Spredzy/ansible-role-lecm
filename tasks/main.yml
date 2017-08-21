@@ -2,46 +2,44 @@
 - name: Install required dependencies
   include: '{{ ansible_os_family }}.yml'
 
-- name: Install lecm
-  package: name=lecm
-  when: ansible_os_family != 'FreeBSD'
-
-
 - name: Configure globals for lecm
-  lecm_global: name={{ item.key }}
-                        value={{ item.value.value }}
-                        config={{ item.value.config | default('/etc/lecm.conf') }}
-                        state={{ item.value.state | default('present') }}
+  lecm_global:
+    name: '{{ item.key }}'
+    value: '{{ item.value.value }}'
+    config: '{{ item.value.config | default("/etc/lecm.conf") }}'
+    state: '{{ item.value.state | default("present") }}'
   with_dict: '{{ lecm_globals }}'
 
 
 - name: Configure certificates item for lecm
-  lecm_certificate: name={{ item.key }}
-                    type={{ item.value.type | default(None) }}
-                    size={{ item.value.size | default(None) }}
-                    digest={{ item.value.digest | default(None) }}
-                    version={{ item.value.veresion | default(None) }}
-                    subjectAltName={{ item.value.subjectAltName | default(None) }}
-                    countryName={{ item.value.countryName | default(None) }}
-                    stateOrProvinceName={{ item.value.stateOrProvinceName | default(None) }}
-                    localityName={{ item.value.localityName | default(None) }}
-                    organizationName={{ item.value.organizationName | default(None) }}
-                    organizationUnitName={{ item.value.organizationUnitName | default(None) }}
-                    commonName={{ item.value.commonName | default(None) }}
-                    emailAddress={{ item.value.emailAddress | default(None) }}
-                    account_key_name={{ item.value.account_key_name | default(None) }}
-                    remaining_days={{ item.value.remaining_days | default(None) }}
-                    path={{ item.value.path | default(None) }}
-                    config={{ item.value.config | default('/etc/lecm.conf') }}
-                    state={{ item.value.state | default('present') }}
+  lecm_certificate:
+    name: '{{ item.key }}'
+    type: '{{ item.value.type | default(None) }}'
+    size: '{{ item.value.size | default(None) }}'
+    digest: '{{ item.value.digest | default(None) }}'
+    version: '{{ item.value.veresion | default(None) }}'
+    subjectAltName: '{{ item.value.subjectAltName | default(None) }}'
+    countryName: '{{ item.value.countryName | default(None) }}'
+    stateOrProvinceName: '{{ item.value.stateOrProvinceName | default(None) }}'
+    localityName: '{{ item.value.localityName | default(None) }}'
+    organizationName: '{{ item.value.organizationName | default(None) }}'
+    organizationUnitName: '{{ item.value.organizationUnitName | default(None) }}'
+    commonName: '{{ item.value.commonName | default(None) }}'
+    emailAddress: '{{ item.value.emailAddress | default(None) }}'
+    account_key_name: '{{ item.value.account_key_name | default(None) }}'
+    remaining_days: '{{ item.value.remaining_days | default(None) }}'
+    path: '{{ item.value.path | default(None) }}'
+    config: '{{ item.value.config | default("/etc/lecm.conf") }}'
+    state: '{{ item.value.state | default("present") }}'
   with_dict: '{{ lecm_certificates }}'
 
 - name: Configure the lecm crons (if desired)
-  cron: name={{ item.key }}
-        minute={{ item.value.minute | default('*') }}
-        hour={{ item.value.hour | default('*') }}
-        day={{ item.value.day | default('*') }}
-        month={{ item.value.month | default('*') }}
-        job={{ item.value.job | default('lecm --renew') }}
-        state={{ item.value.state | default('present') }}
+  cron:
+    name: '{{ item.key }}'
+    minute: '{{ item.value.minute | default("*") }}'
+    hour: '{{ item.value.hour | default("*") }}'
+    day: '{{ item.value.day | default("*") }}'
+    month: '{{ item.value.month | default("*") }}'
+    job: '{{ item.value.job | default("lecm --renew") }}'
+    state: '{{ item.value.state | default("present") }}'
   with_dict: '{{ lecm_crons }}'

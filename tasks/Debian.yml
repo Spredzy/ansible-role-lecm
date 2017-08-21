@@ -1,10 +1,10 @@
-# Copyright 2016 Yanis Guenane <yguenane@redhat.com>
+# Copyright 2017 Yanis Guenane <yguenane@redhat.com>
 # Author: Yanis Guenane <yguenane@redhat.com>
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #   http://www.apache.org/licenses/LICENSE-2.0
 # 
 # Unless required by applicable law or agreed to in writing, software
@@ -14,15 +14,20 @@
 # limitations under the License.
 
 ---
-- name: Install required dependencies
-  package:
-    name: '{{ item }}'
-  with_items:
-    - py27-pip
-    - py27-setuptools_scm
-  become: True
-
 - name: Install lecm
-  pip:
+  package:
     name: lecm
   become: True
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version|version_compare('9', '>=')
+
+- block:
+  - name: Install pip
+    package:
+      name: python-pip
+
+  - name: Install lecm
+    pip:
+      name: lecm
+
+  become: True
+  when: (ansible_distribution == 'Debian' and not ansible_distribution_major_version|version_compare('9', '>=')) or ansible_distribution != 'Debian'

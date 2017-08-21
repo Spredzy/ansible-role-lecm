@@ -1,4 +1,4 @@
-# Copyright 2016 Yanis Guenane <yguenane@redhat.com>
+# Copyright 2016-2017 Yanis Guenane <yguenane@redhat.com>
 # Author: Yanis Guenane <yguenane@redhat.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,18 @@ dependencies: []
 
 galaxy_info:
   author: Spredzy
-  description: An Ansible module for Let's Encrypt Certificates Manager (lecm)
+  description: An Ansible role for Let's Encrypt Certificates Manager (lecm)
   company: "Red Hat"
   license: "Apache 2.0"
   min_ansible_version: 1.8
   platforms:
-    - name: EL
+    - name: Fedora
       versions:
-      - all
+      - 25
+      - 26
+    - name: Debian
+      versions:
+      - 9
   galaxy_tags:
     - ssl
     - tls

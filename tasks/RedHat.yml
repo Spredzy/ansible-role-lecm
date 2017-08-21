@@ -6,7 +6,7 @@
 # You may obtain a copy of the License at
 #
 #   http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,5 +14,24 @@
 # limitations under the License.
 
 ---
-- name: Install required dependencies
-  package: name=epel-release
+- name: Install lecm
+  package:
+    name: lecm
+  become: True
+  when: ansible_distribution == 'Fedora'
+
+- block:
+  - name: Install EPEL
+    package:
+      name: epel-release
+
+  - name: Install python-pip
+    package:
+      name: python-pip
+
+  - name: Install lecm
+    pip:
+      name: lecm
+
+  become: True
+  when: ansible_distribution == 'CentOS'
