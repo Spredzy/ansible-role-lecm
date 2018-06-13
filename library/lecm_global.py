@@ -1,5 +1,4 @@
 #!/usr/bin/python
-#coding: utf-8 -*-
 # Copyright 2016 Yanis Guenane <yguenane@redhat.com>
 # Author: Yanis Guenane <yguenane@redhat.com>
 #
@@ -14,6 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+import os
 
 from ansible.module_utils.basic import *
 
@@ -49,14 +50,16 @@ options:
 
 EXAMPLES = '''
 - name: Create a new global parameter
-  lecm_global: config=/etc/lecm.conf
-               name=remaining_days
-               value=10
+  lecm_global:
+    config: /etc/lecm.conf
+    name: remaining_days
+    value: 10
 
 - name: Remove a global parameter
-  lecm_global: config=/etc/lecm.conf
-               name=remaining_days
-               ensure=absent
+  lecm_global:
+    config: /etc/lecm.conf
+    name: remaining_days
+    ensure: absent
 '''
 
 RETURN = '''
@@ -69,6 +72,7 @@ value:
   type: string
   sample: True
 '''
+
 
 class Parameter(object):
 
@@ -97,8 +101,11 @@ class Parameter(object):
         if self.changed:
             lecm_conf[self.name] = self.value
             with open(self.config, 'w') as conf_file:
-                conf_file.write(yaml.dump(lecm_conf))
-
+                conf_file.write(
+                    yaml.dump(
+                        lecm_conf, explicit_start=True, default_flow_style=False
+                    )
+                )
 
     def remove(self):
         try:
@@ -112,13 +119,16 @@ class Parameter(object):
         try:
             del lecm_conf[self.name]
             with open(self.config, 'w') as conf_file:
-                conf_file.write(yaml.dump(lecm_conf))
+                conf_file.write(
+                    yaml.dump(
+                        lecm_conf, explicit_start=True, default_flow_style=False
+                    )
+                )
+
         except KeyError:
             self.changed = False
 
-
     def dump(self):
-    
         result = {
           'name': self.name,
           'value': self.value,
@@ -126,6 +136,7 @@ class Parameter(object):
         }
 
         return result
+
 
 def main():
     module = AnsibleModule(
@@ -140,11 +151,9 @@ def main():
     if not pyyaml_found:
         module.fail_json(msg='the python PyYAML module is required')
 
-    path = module.params['config']
-    base_dir = os.path.dirname(module.params['config'])
-
-    if not os.path.isdir(base_dir):
-        module.fail_json(name=base_dir, msg='The directory %s does not exist or the file is not a directory' % base_dir)
+    path = os.path.dirname(module.params['config'])
+    if not os.path.isdir(path):
+        module.fail_json(name=path, msg='Directory %s does not exist' % path)
 
     parameter = Parameter(module)
 
