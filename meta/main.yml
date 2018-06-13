@@ -27,9 +27,6 @@ galaxy_info:
       versions:
       - 25
       - 26
-    - name: Debian
-      versions:
-      - 9
   galaxy_tags:
     - ssl
     - tls
