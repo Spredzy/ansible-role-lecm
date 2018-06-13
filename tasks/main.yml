@@ -9,15 +9,16 @@
     config: '{{ item.value.config | default("/etc/lecm.conf") }}'
     state: '{{ item.value.state | default("present") }}'
   with_dict: '{{ lecm_globals }}'
+  become: True
 
 
 - name: Configure certificates item for lecm
   lecm_certificate:
     name: '{{ item.key }}'
     type: '{{ item.value.type | default(None) }}'
-    size: '{{ item.value.size | default(None) }}'
+    size: '{{ item.value.size | default(4096) }}'
     digest: '{{ item.value.digest | default(None) }}'
-    version: '{{ item.value.veresion | default(None) }}'
+    version: '{{ item.value.veresion | default(3) }}'
     subjectAltName: '{{ item.value.subjectAltName | default(None) }}'
     countryName: '{{ item.value.countryName | default(None) }}'
     stateOrProvinceName: '{{ item.value.stateOrProvinceName | default(None) }}'
@@ -27,11 +28,12 @@
     commonName: '{{ item.value.commonName | default(None) }}'
     emailAddress: '{{ item.value.emailAddress | default(None) }}'
     account_key_name: '{{ item.value.account_key_name | default(None) }}'
-    remaining_days: '{{ item.value.remaining_days | default(None) }}'
-    path: '{{ item.value.path | default(None) }}'
+    remaining_days: '{{ item.value.remaining_days | default(10) }}'
+    path: '{{ item.value.path | default("/etc/ssl/letsencrypt") }}'
     config: '{{ item.value.config | default("/etc/lecm.conf") }}'
     state: '{{ item.value.state | default("present") }}'
   with_dict: '{{ lecm_certificates }}'
+  become: True
 
 - name: Configure the lecm crons (if desired)
   cron:
@@ -43,3 +45,4 @@
     job: '{{ item.value.job | default("lecm --renew") }}'
     state: '{{ item.value.state | default("present") }}'
   with_dict: '{{ lecm_crons }}'
+  become: True

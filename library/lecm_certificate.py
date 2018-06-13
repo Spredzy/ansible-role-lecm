@@ -1,5 +1,4 @@
 #!/usr/bin/python
-#coding: utf-8 -*-
 # Copyright 2016 Yanis Guenane <yguenane@redhat.com>
 # Author: Yanis Guenane <yguenane@redhat.com>
 #
@@ -16,6 +15,7 @@
 # limitations under the License.
 
 import copy
+import os
 
 from ansible.module_utils.basic import *
 
@@ -58,14 +58,16 @@ options:
 
 EXAMPLES = '''
 - name: Create a SSL certificate
-  lecm_certificate: config=/etc/lecm.conf
-                    name=lecm.example.com
+  lecm_certificate:
+    config: /etc/lecm.conf
+    name: lecm.example.com
 
 
 - name: Remove a SSL certificate
-  lecm_certificate: config=/etc/lecm.conf
-                    name=lecm.example.com
-                    state=absent
+  lecm_certificate:
+    config: /etc/lecm.conf
+    name: lecm.example.com
+    state: absent
 '''
 
 RETURN = '''
@@ -78,6 +80,7 @@ path:
   type: string
   sample: /srv/git/git_superproject
 '''
+
 
 class Certificate(object):
 
@@ -104,7 +107,6 @@ class Certificate(object):
         self.service_name = module.params['service_name']
         self.service_provider = module.params['service_provider']
         self.path = module.params['path']
-
 
     def write(self):
         l_certificate = {}
@@ -142,21 +144,19 @@ class Certificate(object):
             certificates[self.name] = l_certificate
             lecm_conf['certificates'] = copy.deepcopy(certificates)
             with open(self.config, 'w') as conf_file:
-                conf_file.write(yaml.dump(lecm_conf))
-
+                conf_file.write(
+                    yaml.dump(
+                        lecm_conf, explicit_start=True, default_flow_style=False
+                    )
+                )
 
     def remove(self):
         # Not Implemented yet
         pass
 
     def dump(self):
-    
-        result = {
-          'name': self.name,
-          'changed': self.changed,
-        }
+        return {'name': self.name, 'changed': self.changed}
 
-        return result
 
 def main():
     module = AnsibleModule(
@@ -164,12 +164,11 @@ def main():
             state=dict(default='present', choices=['present', 'absent'], type='str'),
             config=dict(required=False, type='path', default='/etc/lecm.conf'),
             name=dict(type='str'),
-
             type=dict(required=False, type='str'),
-            size=dict(required=False, default='4096', type='str'),
-            digest=dict(required=False, default='sha256', type='str'),
-            version=dict(required=False, default='3', type='str'),
-            subjectAltName=dict(required=False, type='str'),
+            size=dict(required=False, type='int'),
+            digest=dict(required=False, type='str'),
+            version=dict(required=False, type='int'),
+            subjectAltName=dict(required=False, type='list'),
             countryName=dict(required=False, type='str'),
             stateOrProvinceName=dict(required=False, type='str'),
             localityName=dict(required=False, type='str'),
@@ -179,7 +178,7 @@ def main():
             emailAddress=dict(required=False, type='str'),
             account_key_name=dict(required=False, type='str'),
             path=dict(required=False, type='path'),
-            remaining_days=dict(required=False, default='10', type='str'),
+            remaining_days=dict(required=False, type='int'),
             service_name=dict(required=False, type='str'),
             service_provider=dict(required=False, default='systemd', choices=['systemd', 'sysv'], type='str'),
         ),
@@ -188,11 +187,9 @@ def main():
     if not pyyaml_found:
         module.fail_json(msg='the python PyYAML module is required')
 
-    path = module.params['config']
-    base_dir = os.path.dirname(module.params['config'])
-
-    if not os.path.isdir(base_dir):
-        module.fail_json(name=base_dir, msg='The directory %s does not exist or the file is not a directory' % base_dir)
+    path = os.path.dirname(module.params['config'])
+    if not os.path.isdir(path):
+        module.fail_json(name=path, msg='Directory %s does not exist' % path)
 
     certificate = Certificate(module)
 
