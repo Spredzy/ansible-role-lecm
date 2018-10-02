@@ -19,7 +19,7 @@
     size: '{{ item.value.size | default(4096) }}'
     digest: '{{ item.value.digest | default(None) }}'
     version: '{{ item.value.veresion | default(3) }}'
-    subjectAltName: '{{ item.value.subjectAltName | default(None) }}'
+    subjectAltName: '{{ item.value.subjectAltName | default(item.key) }}'
     countryName: '{{ item.value.countryName | default(None) }}'
     stateOrProvinceName: '{{ item.value.stateOrProvinceName | default(None) }}'
     localityName: '{{ item.value.localityName | default(None) }}'
