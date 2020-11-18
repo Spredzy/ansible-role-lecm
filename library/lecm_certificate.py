@@ -126,7 +126,7 @@ class Certificate(object):
         c_certificate = None
         try:
             current_certificates = copy.deepcopy(lecm_conf['certificates'])
-            for certificate, parameters in current_certificates.iteritems():
+            for certificate, parameters in current_certificates.items():
                 if 'name' in parameters:
                     certificate_name = parameters['name']
                 else:
