@@ -28,13 +28,13 @@
 
   - name: Install python-pip
     package:
-      name: {% if ansible_distribution_major_version == 7 %}python{% else %}python3{% endif %}-pip
+      name: "{% if ansible_distribution_major_version == 7 %}python{% else %}python3{% endif %}-pip"
 
   - name: Install acme-tiny
     package:
       name: acme-tiny
     when: ansible_distribution_major_version == 8
-      
+
   - name: Install lecm
     pip:
       name: lecm
